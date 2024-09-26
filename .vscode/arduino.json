@@ -1,0 +1,4 @@
+{
+    "board": "arduino:esp32:nano_nora",
+    "port": "COM5"
+}
