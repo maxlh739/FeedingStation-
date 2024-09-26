@@ -1,41 +1,32 @@
 version: "3.3"
 services:
-  #FastAPI
+  # FastAPI
   api:
     container_name: "foodstation-api"
     image: pylaa/foodstationapi
     restart: always
     environment:
-      #PostGreSQL Database Credentials
       DB_USER: "foodAdmin"
       DB_PASSWORD: "nu7fML74jQoqpi"
-      DB_IP: "postgres"
-      DB_NAME: "foodstation"
-
-      #Local API Configurations
+      DB_HOST: "postgres"
+      DB_NAME: "postgres"
       API_IP: "0.0.0.0"
       API_PORT: "23451"
-
-      #Hashing Algorithm and Secret Key
       SECRET_KEY: "d0212db3d7b090cfd5f384b4b375c4bf"
       ALGORITHM: "HS256"
-
-      ADMIN_USERNAME: "admin"
-      ADMIN_PASSWORD: "admin"
-      ADMIN_EMAIL: "admin@admin.com"
-      ADMIN_FORENAME: "admin"
-      ADMIN_SURNAME: "admin"
-
-      # True or False
-      DEBUG: "False" 
+      DEBUG: "info" 
     networks:
       - foodstation
+    depends_on:
+      postgres:
+        condition: service_healthy  
     deploy:
       replicas: 1
+    ports:
+      - "23451:23451"
 
-
-  #PostgreSQL Database
-  db:
+  # PostgreSQL Database
+  postgres:
     container_name: postgres
     image: postgres:latest
     restart: always
@@ -48,8 +39,11 @@ services:
       - postgres:/var/lib/postgresql/data
     networks:
       - foodstation
-    
-
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U foodAdmin"]  
+      interval: 5s
+      timeout: 60s
+      retries: 5
 
 networks:
   foodstation:
