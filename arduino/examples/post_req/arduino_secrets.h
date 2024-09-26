@@ -1,2 +1,0 @@
-#define SECRET_SSID "TP-Link_B2FB"
-#define SECRET_PASS "123456789"
